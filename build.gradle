@@ -1,0 +1,37 @@
+buildscript {
+	ext {
+		springBootVersion = '1.5.18.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+
+group = 'hr.fer.symbiote.envrapplugin'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+	maven { url "https://jitpack.io" }
+}
+
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter')
+	compile('org.springframework.boot:spring-boot-starter-data-jpa')
+	compile('com.opencsv:opencsv:4.3.2')
+	compile('com.github.symbiote-h2020:ResourceAccessProxyPluginStarter:0.5.2')
+	
+	
+	runtime('com.h2database:h2')
+	
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
