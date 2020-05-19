@@ -1,22 +1,13 @@
-buildscript {
-	ext {
-		springBootVersion = '1.5.18.RELEASE'
-	}
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
+plugins {
+  id 'org.springframework.boot' version '2.2.7.RELEASE'
+  id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+  id 'java'
+  id 'eclipse'
 }
-
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'org.springframework.boot'
 
 group = 'hr.fer.symbiote.envrapplugin'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 1.8
+sourceCompatibility = 11
 
 repositories {
 	mavenCentral()
@@ -25,13 +16,18 @@ repositories {
 
 
 dependencies {
-	compile('org.springframework.boot:spring-boot-starter')
-	compile('org.springframework.boot:spring-boot-starter-data-jpa')
+  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	compile('com.opencsv:opencsv:4.3.2')
-	compile('com.github.symbiote-h2020:ResourceAccessProxyPluginStarter:0.5.2')
+	compile('com.github.symbiote-h2020:ResourceAccessProxyPluginStarter:1.1.0')
 	
 	
-	runtime('com.h2database:h2')
+	runtimeOnly('com.h2database:h2')
 	
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+  testImplementation('org.springframework.boot:spring-boot-starter-test') {
+    exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+  }
+}
+
+test {
+  useJUnitPlatform()
 }

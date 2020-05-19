@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Configuration;
 
 import com.opencsv.bean.CsvToBeanBuilder;
@@ -28,14 +27,14 @@ public class InitDb implements CommandLineRunner {
 		for(SensorReading reading: readings) {
 			reading.setId(i++);
 		}
-		
-		repo.save(readings);
-		
+
+		repo.saveAll(readings);
+
 		readings.stream().forEach(System.out::println);
 	}
 
 	private List<SensorReading> loadData() throws IllegalStateException, FileNotFoundException {
-		String fileName = "mjerenja.csv";
+		String fileName = "measurements.csv";
 		return new CsvToBeanBuilder<SensorReading>(new FileReader(fileName))
 			       .withType(SensorReading.class).build().parse();
 	}
