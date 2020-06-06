@@ -1,11 +1,10 @@
 SENSOR REGISTRATION:
-curl -v -X PUT \
-  http://localhost:8001/resources \
+curl -v -X POST \
+  http://127.0.0.1:8001/resources \
   -H 'cache-control: no-cache' \
   -H 'content-type: application/json;charset=UTF-8' \
   -d '[
-    {
-        
+    {   
         "internalId": "multisensor1",
         "pluginId": "EnvironmantDbRapPlugin",
         "accessPolicy": {
@@ -30,7 +29,7 @@ curl -v -X PUT \
             "description": [
                 "Multisensor that measures different things"
             ],
-            "interworkingServiceURL": "https://iothackaton.tel.fer.hr",
+            "interworkingServiceURL": "https://345a53ed6c8a.ngrok.io",
             "locatedAt": {
                 "@c": ".WGS84Location",
                 "longitude": 52.513681,
@@ -58,17 +57,102 @@ curl -v -X PUT \
             }
         },
         "federationInfo": null
-    }
+    },
+    {   
+        "internalId": "protectedResource1",
+        "pluginId": "EnvironmantDbRapPlugin",
+        "accessPolicy" : {
+          "compositeAccessPolicySpecifiers" : null,
+          "singleTokenAccessPolicySpecifiers" : [
+            {
+               "policyType" : "STAP",
+               "requiredClaims" : {
+                  "SYMBIOTE_SYMBIOTE_enterRoom_C8-18" : "yes"
+               }
+            },
+            {
+               "policyType" : "SLHTAP",
+               "requiredClaims" : {
+                  "iss" : "DemoPlatform2"
+               }
+            }
+          ],
+          "policyType" : "CAP",
+          "relationOperator" : "AND"
+        },
+        "filteringPolicy": {
+          "compositeAccessPolicySpecifiers" : null,
+          "singleTokenAccessPolicySpecifiers" : [
+            {
+               "policyType" : "STAP",
+               "requiredClaims" : {
+                  "SYMBIOTE_SYMBIOTE_enterRoom_C8-18" : "yes"
+               }
+            },
+            {
+               "policyType" : "SLHTAP",
+               "requiredClaims" : {
+                  "iss" : "DemoPlatform2"
+               }
+            }
+          ],
+          "policyType" : "CAP",
+          "relationOperator" : "AND"
+        },
+        "resource": {
+            "@c": ".StationarySensor",
+            "observesProperty": [
+                "temperature", 
+                "carbonMonoxideConcentration", 
+                "nitrogenDioxideConcentration", 
+                "atmosphericPressure",
+                "humidity",
+                "sulphurDioxideConcentration"
+            ],
+            "name": "ProtectedResource1",
+            "description": [
+                "Protected multisensor that measures different things"
+            ],
+            "interworkingServiceURL": "https://345a53ed6c8a.ngrok.io",
+            "locatedAt": {
+                "@c": ".WGS84Location",
+                "longitude": 52.513681,
+                "latitude": 13.363782,
+                "altitude": 15,
+                "name": "Berlin",
+                "description": [
+                    "Grosser Tiergarten"
+                ]
+            },
+            "services": null,
+            "featureOfInterest": {
+                "name": "temperature feature of interest",
+                "description": [
+                    "measures air"
+                ],
+                "hasProperty": [
+	                "temperature", 
+	                "carbonMonoxideConcentration", 
+	                "nitrogenDioxideConcentration", 
+	                "atmosphericPressure",
+	                "humidity",
+	                "sulphurDioxideConcentration"
+                ]
+            }
+        },
+        "federationInfo": null
+    }    
 ]'
 
 
+
 GET GUEST TOKEN
-curl -v -X POST https://886cd894.ngrok.io/aam/get_guest_token
+curl -v -X POST https://345a53ed6c8a.ngrok.io/aam/get_guest_token
 
 
 ACCESS SENSOR
 curl -s -X GET \
-  'https://886cd894.ngrok.io/rap/Sensors('\''5bef06e24f5ab04324f1ca66'\'')/Observations?$top=1' \
+  'https://345a53ed6c8a.ngrok.io/rap/Sensors('\''5bef06e24f5ab04324f1ca66'\'')/Observations?$top=1' \
 -H 'x-auth-timestamp: 1542851498000' \
 -H 'x-auth-size: 1' \
 -H 'x-auth-1: { "token":"eyJhbGciOiJFUzI1NiJ9.eyJ0dHlwIjoiR1VFU1QiLCJzdWIiOiJndWVzdCIsImlwayI6Ik1Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMERBUWNEUWdBRW1RL1YrRVBxUlRkQVE5MVp1QTVud0NHdzhoeTcwaUxuSms5REJDSWdvUHRmTjMzQk05aDNRckNYMlUvVFhMRFV6cm9sQThvS1pJMmVLOFBHS2lVYUVnPT0iLCJpc3MiOiJEZW1vUGxhdGZvcm0iLCJleHAiOjE1NDI4NTU0OTcsImlhdCI6MTU0Mjg1MTg5NywianRpIjoiNTE1NzU4MTYiLCJzcGsiOiJNRmt3RXdZSEtvWkl6ajBDQVFZSUtvWkl6ajBEQVFjRFFnQUVXY3JqdkhGTVE4UDdSQ1JOajdHaCs1QkdFSkdvcno2UmF2R0d0QldTdW9nd3lQaThBcWw0VXVtOHkrajl6eGNCM1JwaU1yaGhhTHRTNzQ3ZkkybUhHdz09In0.Z28NO02j6VXIuujiVOg0dpMhpyf1LTpjXY3fwyzDKqv4gztIdXF4MfJDzOeBMtvtVMuaHXo5clqqBSLDZ6ZKPA", "authenticationChallenge":"", "clientCertificate":"", "clientCertificateSigningAAMCertificate":"", "foreignTokenIssuingAAMCertificate":"" }' | json_pp

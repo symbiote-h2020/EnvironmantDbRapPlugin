@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +46,7 @@ public class EnvironmantDbRapPluginApplication implements CommandLineRunner {
 
   private ObjectMapper mapper = new ObjectMapper();
   private DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+  private Set<String> servingInternalResourceIds = Set.of("multisensor1", "protectedResource1");
 
   @Override
   public void run(String... args) throws Exception {
@@ -52,14 +54,14 @@ public class EnvironmantDbRapPluginApplication implements CommandLineRunner {
 
       @Override
       public String getResourceHistory(List<ResourceInfo> resourceInfo, int top, Query filterQuery) {
-        String resourceId = Utils.getInternalResourceId(resourceInfo);
+        String internalResourceId = Utils.getInternalResourceId(resourceInfo);
 
-        if ("multisensor1".equals(resourceId)) {
+        if (servingInternalResourceIds.contains(internalResourceId)) {
           try {
             List<Observation> observations = new LinkedList<>();
             LocalDateTime time = LocalDateTime.now();
             for (int i = 0; i < top; i++) {
-              observations.add(createObservation(resourceId, time));
+              observations.add(createObservation(internalResourceId, time));
               time = time.minusMinutes(15);
             }
 
@@ -75,11 +77,11 @@ public class EnvironmantDbRapPluginApplication implements CommandLineRunner {
 
       @Override
       public String getResource(List<ResourceInfo> resourceInfo) {
-        String resourceId = Utils.getInternalResourceId(resourceInfo);
+        String internalResourceId = Utils.getInternalResourceId(resourceInfo);
 
-        if ("multisensor1".equals(resourceId)) {
+        if (servingInternalResourceIds.contains(internalResourceId)) {
           try {
-            return mapper.writeValueAsString(createObservation(resourceId));
+            return mapper.writeValueAsString(createObservation(internalResourceId));
           } catch (JsonProcessingException e) {
             throw new RapPluginException(500, "Can not convert observation to JSON", e);
           }
